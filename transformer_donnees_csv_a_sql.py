@@ -28,7 +28,7 @@ profession_df = profession_df[['id', 'name']] # Reordonner les colonnes : d'abor
 
 #les merges avec les id city et profession pour la table perosn
 df = df.merge(city_df[['name', 'id']], left_on='City', right_on='name')
-df.rename(columns={'id_x': 'city_id'}, inplace=True)
+df.rename(columns={'id_y': 'city_id'}, inplace=True)
 
 df = df.merge(profession_df[['name', 'id']], left_on='Profession', right_on='name')
 df.rename(columns={'id': 'profession_id'}, inplace=True)
@@ -39,6 +39,7 @@ df.rename(columns={'id': 'profession_id'}, inplace=True)
 person_df = df[['Gender', 'Age', 'Degree', 'city_id', 'profession_id']].reset_index(drop=True)
 person_df['id'] = person_df.index + 1
 person_df = person_df[['id', 'Gender', 'Age', 'Degree', 'city_id', 'profession_id']]
-df.drop(columns=['name_x', 'name_y', 'id_y'], inplace=True)
+df.drop(columns=['name_x', 'name_y', 'id_x'], inplace=True)
 
+print("====== Table des personnes ======")
 print(person_df)
