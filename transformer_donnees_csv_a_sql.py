@@ -19,7 +19,7 @@ city_df.rename(columns={'City': 'name'}, inplace=True)
 city_df = city_df[['id', 'name']]
 
 
-# === Étape 2 : Créer la table profession ===
+# === Étape 3 : Créer la table profession ===
 profession_df = df[['Profession']].drop_duplicates().reset_index(drop=True)
 profession_df['id'] = profession_df.index + 1  # créer une colonne ID
 profession_df.rename(columns={'Profession': 'name'}, inplace=True)
@@ -27,19 +27,48 @@ profession_df = profession_df[['id', 'name']] # Reordonner les colonnes : d'abor
 
 
 #les merges avec les id city et profession pour la table perosn
-df = df.merge(city_df[['name', 'id']], left_on='City', right_on='name')
+df = df.merge(city_df[['id', 'name']], left_on='City', right_on='name')
 df.rename(columns={'id_y': 'city_id'}, inplace=True)
 
-df = df.merge(profession_df[['name', 'id']], left_on='Profession', right_on='name')
+df = df.merge(profession_df[['id', 'name']], left_on='Profession', right_on='name')
 df.rename(columns={'id': 'profession_id'}, inplace=True)
 
-#print(df.columns)
 
-# === Étape 3 : Créer la table person ===
-person_df = df[['Gender', 'Age', 'Degree', 'city_id', 'profession_id']].reset_index(drop=True)
+# === Étape 4 : Créer la table person ===
+person_df = df[['Gender', 'Age', 'Degree', 'city_id', 'profession_id']].drop_duplicates().reset_index(drop=True)
 person_df['id'] = person_df.index + 1
 person_df = person_df[['id', 'Gender', 'Age', 'Degree', 'city_id', 'profession_id']]
 df.drop(columns=['name_x', 'name_y', 'id_x'], inplace=True)
 
-print("====== Table des personnes ======")
-print(person_df)
+
+#les merges avec l'id person pour la table mental health
+merge_columns = ['Gender', 'Age', 'Degree', 'city_id', 'profession_id']
+df = df.merge(person_df[['id', 'Gender', 'Age', 'Degree', 'city_id', 'profession_id']], on=merge_columns, how='left')
+df.rename(columns={'id': 'person_id'}, inplace=True)
+
+# === Étape 5 : Créer la table mental health ===
+mentalhealth_df = df[['person_id', 'Depression', 'Have you ever had suicidal thoughts ?', 'Sleep Duration', 'Family History of Mental Illness', 'Financial Stress', 'Dietary Habits']].reset_index(drop=True)
+mentalhealth_df = mentalhealth_df[['person_id', 'Depression' ,'Have you ever had suicidal thoughts ?', 'Sleep Duration', 'Family History of Mental Illness', 'Financial Stress', 'Dietary Habits']]
+mentalhealth_df.rename(columns={
+    'Have you ever had suicidal thoughts ?': 'suicidal_thoughts',
+    'Sleep Duration': 'sleep_duration',
+    'Family History of Mental Illness': 'family_history',
+    'Financial Stress': 'financial_stress',
+    'Dietary Habits': 'dietary_habits',
+    'Depression': 'depression'
+}, inplace=True)
+
+
+# === Étape 6 : Créer la table academic work ===
+academicwork_df = df[['person_id', 'Academic Pressure', 'Work Pressure', 'CGPA', 'Study Satisfaction', 'Job Satisfaction', 'Work/Study Hours']].reset_index(drop=True)
+academicwork_df = academicwork_df[['person_id', 'Academic Pressure', 'Work Pressure', 'CGPA', 'Study Satisfaction', 'Job Satisfaction', 'Work/Study Hours']]
+academicwork_df.rename(columns={
+    'Academic Pressure': 'academic_pressure',
+    'Work Pressure': 'work_pressure',
+    'CGPA': 'cgpa',
+    'Study Satisfaction': 'study_satisfaction',
+    'Job Satisfaction': 'job_satisfaction',
+    'Work/Study Hours': 'work_study_hours'
+}, inplace=True)
+
+
