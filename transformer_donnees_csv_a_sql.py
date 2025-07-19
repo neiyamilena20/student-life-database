@@ -39,7 +39,11 @@ person_df = df[['Gender', 'Age', 'Degree', 'city_id', 'profession_id']].reset_in
 person_df['id'] = person_df.index + 1
 person_df = person_df[['id', 'Gender', 'Age', 'Degree', 'city_id', 'profession_id']]
 df.drop(columns=['name_x', 'name_y', 'id_x'], inplace=True)
-
+person_df.rename(columns={
+    "Gender": "gender",
+    "Age": "age",
+    "Degree": "degree"
+}, inplace=True)
 
 #les merges avec l'id person pour la table mental health
 df['person_id'] = person_df['id']
@@ -69,6 +73,19 @@ academicwork_df.rename(columns={
     'Job Satisfaction': 'job_satisfaction',
     'Work/Study Hours': 'work_study_hours'
 }, inplace=True) 
+
+#Sauvegarder chaque table
+person_df = person_df.drop(columns=["id"], errors="ignore")
+person_df.to_csv("person.csv", index=False)
+
+city_df = city_df.drop(columns=["id"], errors="ignore")
+city_df.to_csv("city.csv", index=False)
+
+profession_df = profession_df.drop(columns=["id"], errors="ignore")
+profession_df.to_csv("profession.csv", index=False)
+
+mentalhealth_df.to_csv("mental_health.csv", index=False)
+academicwork_df.to_csv("academic_work.csv", index=False)
 
 
 
